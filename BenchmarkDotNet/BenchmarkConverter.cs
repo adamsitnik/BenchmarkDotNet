@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +7,10 @@ using System.Reflection;
 using BenchmarkDotNet.Extensions;
 using BenchmarkDotNet.Tasks;
 using Microsoft.CSharp;
+using BenchmarkDotNet.Portability;
+#if NET40
+using System.CodeDom.Compiler;
+#endif
 
 namespace BenchmarkDotNet
 {
@@ -81,6 +84,9 @@ namespace BenchmarkDotNet
 
         public static IEnumerable<Benchmark> UrlToBenchmarks(string url)
         {
+#if CORE
+            throw new NotSupportedException("not implemented yet");
+#else
             string benchmarkContent;
             try
             {
@@ -101,10 +107,14 @@ namespace BenchmarkDotNet
                 return new Benchmark[0];
             }
             return SourceToBenchmarks(benchmarkContent);
+#endif
         }
 
         public static IEnumerable<Benchmark> SourceToBenchmarks(string source)
         {
+#if !NET40
+            throw new NotSupportedException("not implemented yet");
+#else
             string benchmarkContent = source;
             var cSharpCodeProvider = new CSharpCodeProvider();
             var compilerParameters = new CompilerParameters(new[] { "mscorlib.dll", "System.dll", "System.Core.dll" }) { CompilerOptions = "/unsafe" };
@@ -126,6 +136,7 @@ namespace BenchmarkDotNet
                                                                    benchmark.Target.Baseline),
                                                benchmark.Task);
                 }
+#endif
         }
 
         private static void AssertMethodHasCorrectSignature(string methodType, MethodInfo methodInfo)
@@ -143,7 +154,7 @@ namespace BenchmarkDotNet
 
             while (declaringType != null)
             {
-                if (!declaringType.IsPublic && !declaringType.IsNestedPublic)
+                if (!declaringType.IsPublic() && !declaringType.IsNestedPublic())
                     throw new InvalidOperationException($"{methodType} method {methodInfo.Name} defined within type {declaringType.FullName} has incorrect access modifiers.\nDeclaring type must be public.");
 
                 declaringType = declaringType.DeclaringType;

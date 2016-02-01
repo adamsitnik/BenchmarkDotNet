@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using BenchmarkDotNet.Portability;
 
 namespace BenchmarkDotNet.Extensions
 {
@@ -23,9 +24,9 @@ namespace BenchmarkDotNet.Extensions
 
         public static string GetCorrectTypeName(this Type type)
         {
-            if (!type.IsGenericType)
+            if (!type.IsGenericType())
             {
-                if (type.IsNested)
+                if (type.IsNested())
                     return $"{type.DeclaringType.Name}.{type.Name}";
                 return type.Name;
             }

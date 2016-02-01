@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Reports;
+using BenchmarkDotNet.Portability;
 
 namespace BenchmarkDotNet.Plugins.Analyzers
 {
@@ -20,7 +21,7 @@ namespace BenchmarkDotNet.Plugins.Analyzers
                 var hostInfo = firstReport.HostInfo;
                 if (hostInfo.HasAttachedDebugger)
                     yield return new BenchmarkAnalysisWarning("AttachedDebugger", "Benchmark was executed with attached debugger.", null);
-                if (hostInfo.Configuration.Equals("DEBUG", StringComparison.InvariantCultureIgnoreCase))
+                if (hostInfo.Configuration.EqualsWithIgnoreCase("DEBUG"))
                     yield return new BenchmarkAnalysisWarning("DebugConfiguration", "Benchmark was built in DEBUG configuration. Please, build it in RELEASE.", null);
             }
         }

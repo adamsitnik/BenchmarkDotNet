@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using BenchmarkDotNet.Plugins.Loggers;
 using BenchmarkDotNet.Plugins.ResultExtenders;
+using BenchmarkDotNet.Portability;
 using BenchmarkDotNet.Reports;
 
 namespace BenchmarkDotNet.Plugins.Exporters
@@ -20,7 +20,7 @@ namespace BenchmarkDotNet.Plugins.Exporters
         public IEnumerable<string> ExportToFile(IList<BenchmarkReport> reports, string fileNamePrefix, IEnumerable<IBenchmarkResultExtender> resultExtenders = null)
         {
             var fileName = $"{fileNamePrefix}-{FileCaption}{FileNameSuffix}.{FileExtension}";
-            using (var stream = new StreamWriter(fileName))
+            using (var stream = StreamWriter.FromPath(fileName))
                 Export(reports, new BenchmarkStreamLogger(stream), resultExtenders);
             yield return fileName;
         }        

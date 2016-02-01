@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using BenchmarkDotNet.Portability;
 using BenchmarkDotNet.Tasks;
 
 namespace BenchmarkDotNet.Extensions
@@ -35,7 +36,7 @@ namespace BenchmarkDotNet.Extensions
 
         private static string DetectCurrentFramework(Type benchmarkType)
         {
-            var attributes = benchmarkType.Assembly.GetCustomAttributes(false).OfType<Attribute>();
+            var attributes = benchmarkType.Assembly().GetCustomAttributes<Attribute>(false);
             var frameworkAttribute = attributes.FirstOrDefault(a => a.ToString() == @"System.Runtime.Versioning.TargetFrameworkAttribute");
             if (frameworkAttribute == null)
 #if DEBUG

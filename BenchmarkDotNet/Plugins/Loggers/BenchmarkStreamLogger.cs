@@ -19,7 +19,11 @@ namespace BenchmarkDotNet.Plugins.Loggers
 
         public BenchmarkStreamLogger(string filePath, bool append = false)
         {
+#if !CORE
             writer = new StreamWriter(filePath, append);
+#else
+            writer = new StreamWriter(File.OpenWrite(filePath));
+#endif
         }
 
         public void Write(BenchmarkLogKind logKind, string format, params object[] args)

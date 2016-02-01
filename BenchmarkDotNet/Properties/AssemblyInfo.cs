@@ -19,3 +19,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("0.8.3")]
 
 [assembly: InternalsVisibleTo("BenchmarkDotNet.IntegrationTests")]
+[assembly: InternalsVisibleTo("BenchmarkDotNet.Samples")]

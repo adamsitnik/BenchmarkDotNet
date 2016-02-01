@@ -1,4 +1,4 @@
-﻿#if !DNX451
+﻿#if NET40
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 

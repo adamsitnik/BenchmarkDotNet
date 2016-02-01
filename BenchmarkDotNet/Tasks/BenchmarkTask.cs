@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BenchmarkDotNet.Portability;
 
 namespace BenchmarkDotNet.Tasks
 {
@@ -24,7 +25,7 @@ namespace BenchmarkDotNet.Tasks
         {
             var attrs = methodInfo.GetCustomAttributes(typeof(BenchmarkTaskAttribute), false).Cast<BenchmarkTaskAttribute>().ToList();
             if (attrs.Count == 0 && methodInfo.DeclaringType != null)
-                attrs = methodInfo.DeclaringType.GetCustomAttributes(typeof(BenchmarkTaskAttribute), false).Cast<BenchmarkTaskAttribute>().ToList();
+                attrs = methodInfo.DeclaringType.GetCustomAttributes<BenchmarkTaskAttribute>(typeof(BenchmarkTaskAttribute), false).ToList();
             if (attrs.Count == 0)
                 attrs.Add(new BenchmarkTaskAttribute());
             return attrs.Select(attr => attr.Task);

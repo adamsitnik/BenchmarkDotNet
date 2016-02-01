@@ -1,4 +1,4 @@
-﻿#if !DNX451
+﻿#if NET45
 using BenchmarkDotNet.Diagnostics;
 using BenchmarkDotNet.Plugins;
 using BenchmarkDotNet.Plugins.Loggers;

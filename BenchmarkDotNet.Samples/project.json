@@ -6,19 +6,33 @@
     "optimize": true
   },
   "commands": {
-    "run": "BenchmarkDotNet.Samples"
+    "CORE": "BenchmarkDotNet.Samples",
+    "DNX451": "BenchmarkDotNet.Samples"
   },
   "frameworks": {
     "net40": {
+      "dependencies": {
+        "BenchmarkDotNet.Diagnostics": "1.0.0-*"
+      }
     },
     "dnx451": {
+      "dependencies": {
+        "BenchmarkDotNet.Diagnostics": "1.0.0-*"
+      }
+    },
+    "dnxcore50": {
+      "compilationOptions": {
+        "define": [ "CORE" ]
+      },
+      "dependencies": {
+        "System.Security.Cryptography.Hashing.Algorithms": "4.0.0-beta-23225"
+      }
     }
   },
   "dependencies": {
     "BenchmarkDotNet": {
       "target": "project"
-    },
-    "BenchmarkDotNet.Diagnostics": "1.0.0-*"
+    }
   },
   "scripts": {
     "postbuild": [

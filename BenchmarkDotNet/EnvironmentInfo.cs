@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Management;
 using System.Reflection;
 using BenchmarkDotNet.Extensions;
+using BenchmarkDotNet.Portability;
 
 namespace BenchmarkDotNet
 {
@@ -46,10 +46,10 @@ namespace BenchmarkDotNet
         {
             BenchmarkDotNetCaption = GetBenchmarkDotNetCaption(),
             BenchmarkDotNetVersion = GetBenchmarkDotNetVersion(),
-            OsVersion = GetOsVersion(),
-            ProcessorName = GetProcessorName(),
+            OsVersion = RuntimeInformation.GetOsVersion(),
+            ProcessorName = RuntimeInformation.GetProcessorName(),
             ProcessorCount = GetProcessorCount(),
-            ClrVersion = GetClrVersion(),
+            ClrVersion = RuntimeInformation.GetClrVersion(),
             Architecture = GetArchitecture(),
             HasAttachedDebugger = GetHasAttachedDebugger(),
             HasRyuJit = GetHasRyuJit(),
@@ -72,46 +72,13 @@ namespace BenchmarkDotNet
         private string GetDebuggerFlag() => HasAttachedDebugger ? " [AttachedDebugger]" : "";
 
         private static string GetBenchmarkDotNetCaption() =>
-            ((AssemblyTitleAttribute)typeof(BenchmarkRunner).Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0]).Title;
+            typeof(BenchmarkRunner).Assembly().GetCustomAttributes<AssemblyTitleAttribute>(false).ToArray()[0].Title;
 
         private static string GetBenchmarkDotNetVersion() =>
-            typeof(BenchmarkRunner).Assembly.GetName().Version + (IsPublishedNuget ? string.Empty : "+");
-
-        private static string GetOsVersion() => Environment.OSVersion.ToString();
-
-        private static string GetProcessorName()
-        {
-            var info = string.Empty;
-            if (IsWindows() && !IsMono())
-            {
-                try
-                {
-                    var mosProcessor = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
-                    foreach (var moProcessor in mosProcessor.Get().Cast<ManagementObject>())
-                        info += moProcessor["name"]?.ToString();
-                }
-                catch (Exception)
-                {
-                }
-            }
-            else
-                info = "?";
-            return info;
-        }
+            typeof(BenchmarkRunner).Assembly().GetName().Version + (IsPublishedNuget ? string.Empty : "+");
 
         private static int GetProcessorCount() => Environment.ProcessorCount;
 
-        private static string GetClrVersion()
-        {
-            if (IsMono())
-            {
-                var monoRuntimeType = Type.GetType("Mono.Runtime");
-                var monoDisplayName = monoRuntimeType?.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
-                if (monoDisplayName != null)
-                    return "Mono " + monoDisplayName.Invoke(null, null);
-            }
-            return "MS.NET " + Environment.Version;
-        }
 
         private static string GetArchitecture() => IntPtr.Size == 4 ? "32-bit" : "64-bit";
 
@@ -119,7 +86,7 @@ namespace BenchmarkDotNet
 
         private static bool GetHasRyuJit()
         {
-            if (Type.GetType("Mono.Runtime") == null && IntPtr.Size == 8 && GetConfiguration() != "DEBUG")
+            if (!RuntimeInformation.IsMono() && IntPtr.Size == 8 && GetConfiguration() != "DEBUG")
                 if (!new JitHelper().IsMsX64())
                     return true;
             return false;
@@ -136,11 +103,6 @@ namespace BenchmarkDotNet
 
         private static long GetStopwatchFrequency() => Stopwatch.Frequency;
         private static bool GetIsStopwatchHighResolution() => Stopwatch.IsHighResolution;
-
-        private static bool IsMono() => Type.GetType("Mono.Runtime") != null;
-
-        private static bool IsWindows() =>
-            new[] { PlatformID.Win32NT, PlatformID.Win32S, PlatformID.Win32Windows, PlatformID.WinCE }.Contains(Environment.OSVersion.Platform);
 
         // See http://aakinshin.net/en/blog/dotnet/jit-version-determining-in-runtime/
         private class JitHelper

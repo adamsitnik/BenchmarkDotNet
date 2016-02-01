@@ -153,6 +153,7 @@ namespace BenchmarkDotNet.Plugins.Toolchains.Classic
 
         private static string GetReferenceToAssembly(Type type)
         {
+#if NET40
             var template = @"    <Reference Include=""$AssemblyName$"">
       <HintPath>..\$AssemblyFileName$</HintPath>
     </Reference>";
@@ -163,6 +164,9 @@ namespace BenchmarkDotNet.Plugins.Toolchains.Classic
                 : template.
                     Replace("$AssemblyName$", assembly.GetName(false).Name).
                     Replace("$AssemblyFileName$", fileName);
+#else
+            throw new InvalidOperationException("it should have never happened");
+#endif
         }
 
         private void GenerateAppConfigFile(string projectDir, BenchmarkConfiguration configuration)
@@ -216,6 +220,7 @@ namespace BenchmarkDotNet.Plugins.Toolchains.Classic
 
         private void EnsureDependancyInCorrectLocation(Type type, string outputDir)
         {
+#if NET40
             var fileInfo = new FileInfo(type.Assembly.Location);
             if (fileInfo.Name == "mscorlib.dll")
                 return;
@@ -227,6 +232,9 @@ namespace BenchmarkDotNet.Plugins.Toolchains.Classic
                 logger.WriteLineInfo("//   Actually at: {0}", fileInfo.FullName);
                 CopyFile(fileInfo.FullName, expectedLocation);
             }
+#else
+            throw new InvalidOperationException("it should have never happened");
+#endif
         }
 
         private void CopyFile(string sourcePath, string destinationPath)

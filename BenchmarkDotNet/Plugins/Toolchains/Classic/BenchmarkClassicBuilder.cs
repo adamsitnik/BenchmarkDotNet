@@ -1,4 +1,4 @@
-﻿#if !DNX451
+﻿#if NET40
 using System.Collections.Generic;
 using System.IO;
 using BenchmarkDotNet.Plugins.Loggers;

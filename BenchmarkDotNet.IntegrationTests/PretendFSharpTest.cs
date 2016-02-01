@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Plugins;
+﻿#if NET45 // this test can be green again for DNX451 if we recompile the exe in dnx, it is using old Toolchain.Classic
+using BenchmarkDotNet.Plugins;
 using BenchmarkDotNet.Plugins.Loggers;
 using Xunit;
 
@@ -9,12 +10,7 @@ namespace BenchmarkDotNet.IntegrationTests
     // (It seemed simpler to do it this way, rather than trying to compile F# code as part of our integration tests)
     public class PretendFSharpTest
     {
-
-#if DNX451
-        [Fact(Skip = "this test can be green again if we recompile the exe in dnx, it is using old Toolchain.Classic")]
-#else
         [Fact]
-#endif
         public void Test()
         {
             var logger = new BenchmarkAccumulationLogger();
@@ -27,3 +23,4 @@ namespace BenchmarkDotNet.IntegrationTests
         }
     }
 }
+#endif

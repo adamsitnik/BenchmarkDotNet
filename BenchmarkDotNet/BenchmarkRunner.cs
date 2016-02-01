@@ -12,6 +12,8 @@ using BenchmarkDotNet.Tasks;
 using BenchmarkDotNet.Plugins.Toolchains;
 using BenchmarkDotNet.Plugins.Toolchains.Results;
 using BenchmarkDotNet.Plugins.ResultExtenders;
+using BenchmarkDotNet.Portability;
+using StreamWriter = BenchmarkDotNet.Portability.StreamWriter;
 
 namespace BenchmarkDotNet
 {
@@ -33,7 +35,7 @@ namespace BenchmarkDotNet
             benchmarkRunIndex++;
             if (competitionName == null)
                 competitionName = $"BenchmarkRun-{benchmarkRunIndex:##000}-{DateTime.Now:yyyy-MM-dd-hh-mm-ss}";
-            using (var logStreamWriter = new StreamWriter(competitionName + ".log"))
+            using (var logStreamWriter = StreamWriter.FromPath(competitionName + ".log"))
             {
                 var logger = new BenchmarkCompositeLogger(Plugins.CompositeLogger, new BenchmarkStreamLogger(logStreamWriter));
                 var reports = Run(benchmarks, logger, competitionName);
