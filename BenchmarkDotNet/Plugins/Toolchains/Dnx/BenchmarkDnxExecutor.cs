@@ -36,7 +36,7 @@ namespace BenchmarkDotNet.Plugins.Toolchains.Dnx
 
 #if DNX451
             builder.Append("-r clr ");
-#elif CORECLR
+#elif CORE
             builder.Append("-r coreclr ");
 #endif
 

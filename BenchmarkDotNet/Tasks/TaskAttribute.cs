@@ -18,6 +18,8 @@ namespace BenchmarkDotNet.Tasks
         {
 #if DNX451
             var toolchain = BenchmarkToolchain.DNX451;
+#elif CORE
+            var toolchain = BenchmarkToolchain.CORE;
 #else
             var toolchain = BenchmarkToolchain.Classic;
 #endif

@@ -15,6 +15,8 @@ namespace BenchmarkDotNet.Tasks
             BenchmarkFramework framework = BenchmarkFramework.HostFramework,
 #if DNX451
             BenchmarkToolchain toolchain = BenchmarkToolchain.DNX451,
+#elif CORE
+            BenchmarkToolchain toolchain = BenchmarkToolchain.CORE,
 #else
             BenchmarkToolchain toolchain = BenchmarkToolchain.Classic,
 #endif

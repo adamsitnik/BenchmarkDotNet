@@ -1,8 +1,16 @@
 {
   "profiles": {
-    "DEBUG_4.0": {
+    "4.0_DEBUG": {
       "executablePath": "BenchmarkDotNet.Samples.dll",
       "workingDirectory": "..\\artifacts\\bin\\BenchmarkDotNet.Samples\\Debug\\net40\\"
+    },
+    "CORE": {
+      "commandName": "CORE",
+      "sdkVersion": "dnx-coreclr-win-x86.1.0.0-rc1-update1"
+    },
+    "DNX451": {
+      "commandName": "DNX451",
+      "sdkVersion": "dnx-clr-win-x86.1.0.0-rc1-update1"
     },
     "DNX_TRACE": {
       "commandName": "run",

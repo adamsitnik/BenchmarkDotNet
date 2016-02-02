@@ -41,6 +41,7 @@ namespace BenchmarkDotNet.Plugins
 
         private static IBenchmarkDiagnoser[] LoadDiagnoser()
         {
+#if !CORE
             var diagnosticAssembly = "BenchmarkDotNet.Diagnostics.dll";
             try
             {
@@ -67,6 +68,7 @@ namespace BenchmarkDotNet.Plugins
             {
                 BenchmarkConsoleLogger.Default.WriteLineError($"Error loading {diagnosticAssembly}: {ex.GetType().Name} - {ex.Message}");
             }
+#endif
             return new IBenchmarkDiagnoser[0];
         }
 
@@ -83,6 +85,12 @@ namespace BenchmarkDotNet.Plugins
 #if DNX451
             return new BenchmarkToolchainBuilder(
                 BenchmarkToolchain.DNX451,
+                (benchmark, logger) => new BenchmarkDnxGenerator(logger), 
+                (benchmark, logger) => new BenchmarkDnuBuilder(logger), 
+                (benchmark, logger) => new BenchmarkDnxExecutor(benchmark, logger));
+#elif CORE
+            return new BenchmarkToolchainBuilder(
+                BenchmarkToolchain.CORE,
                 (benchmark, logger) => new BenchmarkDnxGenerator(logger), 
                 (benchmark, logger) => new BenchmarkDnuBuilder(logger), 
                 (benchmark, logger) => new BenchmarkDnxExecutor(benchmark, logger));

@@ -4,6 +4,7 @@
     {
         Classic,
         DNX451,
+        CORE,
         Custom1,
         Custom2,
         Custom3,
