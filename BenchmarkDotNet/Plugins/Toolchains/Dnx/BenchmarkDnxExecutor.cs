@@ -27,7 +27,11 @@ namespace BenchmarkDotNet.Plugins.Toolchains.Dnx
 
             if (platform == BenchmarkPlatform.AnyCpu)
             {
+#if DNX451
                 builder.Append("dnx run ");
+#elif CORE
+                builder.Append("dnvm run default run ");
+#endif
             }
             else
             {
